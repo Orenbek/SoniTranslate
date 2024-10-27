@@ -3,8 +3,7 @@ from soni_translate.logging_setup import (
     logger,
     set_logging_level,
     configure_logging_libs,
-)
-configure_logging_libs()  # noqa
+); configure_logging_libs() # noqa
 import whisperx
 import torch
 import os
@@ -651,8 +650,7 @@ class SoniTranslate(SoniTrCache):
                     "raw_media",
                     video_output_name,
                     "wav" if is_audio_file(media_file) else "mp4",
-                    file_obj=base_audio_wav if is_audio_file(
-                        media_file) else base_video_file,
+                    file_obj=base_audio_wav if is_audio_file(media_file) else base_video_file,
                 )
                 logger.info(f"Done: {output}")
                 return output
@@ -739,8 +737,7 @@ class SoniTranslate(SoniTrCache):
                             self.result = align_speech(audio, self.result)
                             logger.debug(
                                 "Align complete, "
-                                f"segments count {
-                                    len(self.result['segments'])}"
+                                f"segments count {len(self.result['segments'])}"
                             )
                     except Exception as error:
                         logger.error(str(error))
@@ -928,8 +925,7 @@ class SoniTranslate(SoniTrCache):
                 "wav" if is_audio_file(media_file) else (
                     "mkv" if "mkv" in output_type else "mp4"
                 ),
-                file_obj=base_audio_wav if is_audio_file(
-                    media_file) else base_video_file,
+                file_obj=base_audio_wav if is_audio_file(media_file) else base_video_file,
                 soft_subtitles=False if is_audio_file(media_file) else True,
                 subtitle_files=output_format_subtitle,
             )
@@ -991,11 +987,11 @@ class SoniTranslate(SoniTrCache):
             "valid_speakers": self.valid_speakers
         }):
             audio_files, speakers_list = accelerate_segments(
-                self.result_diarize,
-                max_accelerate_audio,
-                self.valid_speakers,
-                acceleration_rate_regulation,
-            )
+                    self.result_diarize,
+                    max_accelerate_audio,
+                    self.valid_speakers,
+                    acceleration_rate_regulation,
+                )
 
             # Voice Imitation (Tone color converter)
             if voice_imitation:
@@ -1082,10 +1078,8 @@ class SoniTranslate(SoniTrCache):
         ], {}):
             # TYPE MIX AUDIO
             remove_files(mix_audio_file)
-            command_volume_mix = f'ffmpeg -y -i {base_audio_wav} -i {dub_audio_file} -filter_complex "[0:0]volume={
-                volume_original_audio}[a];[1:0]volume={volume_translated_audio}[b];[a][b]amix=inputs=2:duration=longest" -c:a libmp3lame {mix_audio_file}'
-            command_background_mix = f'ffmpeg -i {base_audio_wav} -i {
-                dub_audio_file} -filter_complex "[1:a]asplit=2[sc][mix];[0:a][sc]sidechaincompress=threshold=0.003:ratio=20[bg]; [bg][mix]amerge[final]" -map [final] {mix_audio_file}'
+            command_volume_mix = f'ffmpeg -y -i {base_audio_wav} -i {dub_audio_file} -filter_complex "[0:0]volume={volume_original_audio}[a];[1:0]volume={volume_translated_audio}[b];[a][b]amix=inputs=2:duration=longest" -c:a libmp3lame {mix_audio_file}'
+            command_background_mix = f'ffmpeg -i {base_audio_wav} -i {dub_audio_file} -filter_complex "[1:a]asplit=2[sc][mix];[0:a][sc]sidechaincompress=threshold=0.003:ratio=20[bg]; [bg][mix]amerge[final]" -map [final] {mix_audio_file}'
             if mix_method_audio == "Adjusting volumes and mixing audio":
                 # volume mix
                 run_command(command_volume_mix)
@@ -1124,8 +1118,7 @@ class SoniTranslate(SoniTrCache):
                 try:
                     logger.info("Burn subtitles")
                     remove_files(vid_subs)
-                    command = f"ffmpeg -i {
-                        base_video_file} -y -vf subtitles=sub_tra.srt -max_muxing_queue_size 9999 {vid_subs}"
+                    command = f"ffmpeg -i {base_video_file} -y -vf subtitles=sub_tra.srt -max_muxing_queue_size 9999 {vid_subs}"
                     run_command(command)
                     base_video_file = vid_subs
                     self.burn_subs_id = hashvideo_text
@@ -1142,8 +1135,7 @@ class SoniTranslate(SoniTrCache):
             # Merge new audio + video
             remove_files(video_output_file)
             run_command(
-                f"ffmpeg -i {base_video_file} -i {
-                    mix_audio_file} -c:v copy -c:a copy -map 0:v -map 1:a -shortest {video_output_file}"
+                f"ffmpeg -i {base_video_file} -i {mix_audio_file} -c:v copy -c:a copy -map 0:v -map 1:a -shortest {video_output_file}"
             )
 
         output = media_out(
@@ -1181,8 +1173,7 @@ class SoniTranslate(SoniTrCache):
         progress
     ):
         prog_disp("Processing pages...", 0.10, is_gui, progress=progress)
-        doc_data = doc_to_txtximg_pages(
-            document,  width, height, start_page, end_page, bcolor)
+        doc_data = doc_to_txtximg_pages(document,  width, height, start_page, end_page, bcolor)
         result_diarize = page_data_to_segments(doc_data, 1700)
 
         prog_disp("Translating...", 0.20, is_gui, progress=progress)
@@ -1209,10 +1200,10 @@ class SoniTranslate(SoniTrCache):
 
         # fix format and set folder output
         audio_files, speakers_list = accelerate_segments(
-            result_diarize,
-            1.0,
-            valid_speakers,
-        )
+                result_diarize,
+                1.0,
+                valid_speakers,
+            )
 
         # custom voice
         if custom_voices:
@@ -1242,8 +1233,8 @@ class SoniTranslate(SoniTrCache):
 
         prog_disp("Creating video file...", 0.80, is_gui, progress=progress)
         video_doc = create_video_from_images(
-            doc_data,
-            result_diarize
+                doc_data,
+                result_diarize
         )
 
         # Merge video and audio
@@ -1399,10 +1390,10 @@ class SoniTranslate(SoniTrCache):
 
         # fix format and set folder output
         audio_files, speakers_list = accelerate_segments(
-            result_diarize,
-            1.0,
-            valid_speakers,
-        )
+                result_diarize,
+                1.0,
+                valid_speakers,
+            )
 
         # custom voice
         if custom_voices:
