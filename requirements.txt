@@ -1,5 +1,6 @@
 # Temporal requirements
 nest_asyncio
+python-multipart==0.0.12
 --extra-index-url https://download.pytorch.org/whl/cu118
 torch>=2.1.0+cu118
 torchvision>=0.16.0+cu118
