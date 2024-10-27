@@ -228,13 +228,18 @@ def transcribe_speech(
         asr_model = model_dir
         logger.info(f"ASR Model: {str(model_dir)}")
 
-    model = whisperx.load_model(
-        asr_model,
-        os.environ.get("SONITR_DEVICE"),
-        compute_type=compute_type,
-        language=SOURCE_LANGUAGE,
-        asr_options=asr_options,
-    )
+    try:
+        model = whisperx.load_model(
+            asr_model,
+            os.environ.get("SONITR_DEVICE"),
+            compute_type=compute_type,
+            language=SOURCE_LANGUAGE,
+            asr_options=asr_options,
+        )
+        logger.info("model loaded the ASR model!")
+    except Exception as error:
+        logger.error(f"Error loading the ASR model~~~, {str(error)}")
+        return
 
     audio = whisperx.load_audio(audio_wav)
     result = model.transcribe(
