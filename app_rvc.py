@@ -2796,7 +2796,7 @@ def create_parser():
     parser.add_argument(
         "--public_url",
         action="store_true",
-        default=False,
+        default=True,
         help="Enable public link",
     )
     parser.add_argument(
@@ -2817,7 +2817,7 @@ def create_parser():
     parser.add_argument(
         "--language",
         type=str,
-        default="english",
+        default="chinese_zh_cn",
         help=" Select the language of the interface: english, spanish",
     )
     parser.add_argument(
